@@ -7,7 +7,11 @@
       "client_id": "xxx",
       "client_secret": "xxx",
       "code": "xxx",
-      "api_token": "xxx"
+      "api_token": "xxx",
+      "verification_token": "xxx"
     }
+  },
+  "test": {
+    "test_user": "xxx"
   }
 }
