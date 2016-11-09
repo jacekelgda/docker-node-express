@@ -1,0 +1,13 @@
+{
+  "incoming_webhook": {
+    "url": "xxx"
+  },
+  "api": {
+    "oauth": {
+      "client_id": "xxx",
+      "client_secret": "xxx",
+      "code": "xxx",
+      "api_token": "xxx"
+    }
+  }
+}
