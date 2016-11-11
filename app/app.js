@@ -12,7 +12,7 @@ const attachments = JSON.stringify(resources_attachemnts);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 8080;
 var router = express.Router();
 
 router.use(function timeLog (req, res, next) {
@@ -20,7 +20,7 @@ router.use(function timeLog (req, res, next) {
 })
 
 app.get('/', function(req, res) {
-  res.send('API is running ...');
+  res.send('API is running now ...');
 });
 
 router.post('/notify', function (req, res) {
@@ -34,9 +34,8 @@ router.post('/notify', function (req, res) {
 				switch (vote) {
 				  case 'smile':
 				    console.log(username, 'smile');
-						var slack_api_token = getApiToken();
 						url = 'https://slack.com/api/' + postMessageMethod +
-							'?token=' + slack_api_token +
+							'?token=' + getConfigVariable('API_TOKEN') +
 							'&username=Mr. Moody' +
 							'&as_user=false' +
 							'&icon_url=https://s3-us-west-2.amazonaws.com/slack-files2/avatars/2016-11-04/100929399430_30f602e36ebfbc81756b_48.jpg' +
@@ -50,9 +49,8 @@ router.post('/notify', function (req, res) {
 				    break;
 					case 'neutral_face':
 						console.log(username, 'neutral_face');
-						var slack_api_token = getApiToken();
 						url = 'https://slack.com/api/' + postMessageMethod +
-							'?token=' + slack_api_token +
+							'?token=' + getConfigVariable('API_TOKEN') +
 							'&username=Mr. Moody' +
 							'&as_user=false' +
 							'&icon_url=https://s3-us-west-2.amazonaws.com/slack-files2/avatars/2016-11-04/100929399430_30f602e36ebfbc81756b_48.jpg' +
@@ -66,9 +64,8 @@ router.post('/notify', function (req, res) {
 				    break;
 					case 'disappointed':
 						console.log(username, 'disappointed');
-						var slack_api_token = getApiToken();
 						url = 'https://slack.com/api/' + postMessageMethod +
-							'?token=' + slack_api_token +
+							'?token=' + getConfigVariable('API_TOKEN') +
 							'&username=Mr. Moody' +
 							'&as_user=false' +
 							'&icon_url=https://s3-us-west-2.amazonaws.com/slack-files2/avatars/2016-11-04/100929399430_30f602e36ebfbc81756b_48.jpg' +
@@ -101,8 +98,8 @@ router.post('/notify', function (req, res) {
 })
 
 router.post('/test-send', function (req, res) {
-	if (config.has('test.test_user') && req.body.user_name == config.get('test.test_user')) {
-    url = getUrlForRequest(getApiToken(), config.get('test.test_user'));
+	if (req.body.user_name == getConfigVariable('TEST_USER')) {
+    url = getUrlForRequest(getConfigVariable('API_TOKEN'), getConfigVariable('TEST_USER'));
     makeHttpsGetRequest(url);
 		res.send('"How was your week?" - notifications sent to private channels. Thanks!');
 	} else {
@@ -112,17 +109,17 @@ router.post('/test-send', function (req, res) {
 // </Routers>
 
 // <Functions>
-function getApiToken() {
-  if (config.has('api.oauth.api_token')) {
-    slack_api_token = config.get('api.oauth.api_token');
+function getConfigVariable(variableName) {
+  if (config.has('env_variables.' + variableName)) {
+    return config.get('env_variables.' + variableName);
+  } else {
+    return process.env[variableName];
   }
-
-  return slack_api_token;
 }
 
 function getUrlForRequest(token, username) {
   return 'https://slack.com/api/' + postMessageMethod +
-    '?token=' + token +
+    '?token=' + getConfigVariable('API_TOKEN') +
     '&username=Mr. Moody' +
     '&as_user=false' +
     '&icon_url=https://s3-us-west-2.amazonaws.com/slack-files2/avatars/2016-11-04/100929399430_30f602e36ebfbc81756b_48.jpg' +
