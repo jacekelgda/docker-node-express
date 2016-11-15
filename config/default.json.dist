@@ -13,5 +13,10 @@
   },
   "test": {
     "test_user": "xxx"
+  },
+  "env_variables": {
+    "TEST_USER": "xxx",
+    "API_TOKEN": "xxx",
+    "VERIFICATION_TOKEN": "xxx"
   }
 }

@@ -1,18 +1,20 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const Slack = require('slack-node');
-const app = express();
-const config = require('config');
-const https = require('https');
-const postMessageMethod = 'chat.postMessage';
-const listUsersMethod = 'users.list';
+var express = require('express');
+var bodyParser = require('body-parser');
+var Slack = require('slack-node');
+var config = require('config');
+var https = require('https');
+var fs = require('fs');
+
+var postMessageMethod = 'chat.postMessage';
+var listUsersMethod = 'users.list';
 var resources_attachemnts = require('./resources/attachments.json');
-const attachments = JSON.stringify(resources_attachemnts);
+var attachments = JSON.stringify(resources_attachemnts);
+var app = express();
+const version = 'v.0.0.5';
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-var port = process.env.PORT || 8080;
 var router = express.Router();
 
 router.use(function timeLog (req, res, next) {
@@ -20,7 +22,7 @@ router.use(function timeLog (req, res, next) {
 })
 
 app.get('/', function(req, res) {
-  res.send('API is running now ...');
+  res.send(version);
 });
 
 router.post('/notify', function (req, res) {
@@ -28,7 +30,7 @@ router.post('/notify', function (req, res) {
 			var payload = JSON.parse(req.body.payload);
 
 			// extract to config
-			if (config.has('api.oauth.verification_token') && payload.token == config.get('api.oauth.verification_token')) {
+			if (payload.token == getConfigVariable('VERIFICATION_TOKEN')) {
 				var vote = payload.actions[0].value;
 				var username = payload.user.name;
 				switch (vote) {
@@ -164,5 +166,5 @@ function sendToMany() {
 }
 
 app.use('/api', router);
-app.listen(port);
-console.log('Listening to port ' + port);
+app.listen(8080);
+console.log(version);

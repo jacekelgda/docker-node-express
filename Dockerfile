@@ -9,6 +9,6 @@ ADD app /src/app
 ADD app/package.json /src/package.json
 RUN npm install
 
-EXPOSE 443
+EXPOSE 8080
 
 CMD supervisor -w app app/app.js

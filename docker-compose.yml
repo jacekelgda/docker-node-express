@@ -5,6 +5,5 @@ services:
     build: .
     volumes:
       - "./app:/src/app"
-      #- "./config:/src/config"
     ports:
-      - "443:443"
+      - "80:8080"
